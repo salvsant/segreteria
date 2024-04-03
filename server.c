@@ -37,6 +37,40 @@ int main() {
     max_fd = listenfd;
 
 
+
+    while(1) {
+
+        FD_ZERO(&read_set);
+        FD_SET(listenfd, &read_set);
+
+
+        if (connfd > -1) {
+            FD_SET(connfd, &read_set);
+        }
+
+
+        if (select(max_fd + 1, &read_set, NULL, NULL, NULL) < 0) {
+            perror("Errore nell'operazione di select!");
+        }
+
+
+        if (FD_ISSET(listenfd, &read_set)) {
+
+            if ((connfd = accept(listenfd, (struct sockaddr *)NULL, NULL)) < 0) {
+                perror("Errore nell'operazione di accept!");
+            }
+
+
+            if (connfd > max_fd) {
+                max_fd = connfd;
+            }
+        }
+
+
+
+
+
+
     printf("Hello, World!\n");
     printf("test commit");
     return 0;
