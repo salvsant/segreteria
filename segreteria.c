@@ -105,6 +105,9 @@ int main(int argc, char **argv) {
     FD_SET(listenfd, &master_set);
     max_fd = max(max_fd, listenfd);
 
+    while(1) {
+        read_set = master_set;
+        write_set = master_set;
 
 
 
