@@ -160,6 +160,50 @@ int main() {
         read(connfd, name, sizeof(name));
         read(connfd, corso, sizeof(corso));
 
+        const char *query = "INSERT INTO exams (exam_name,nome_corso) VALUES (?,?)";
+
+        MYSQL_STMT *stmt = mysql_stmt_init(conn);
+        if (mysql_stmt_prepare(stmt, query, strlen(query)) != 0) {
+            const char *err = mysql_error(conn);
+            write(connfd, err, strlen(err) + 1);
+            mysql_stmt_close(stmt);
+            mysql_close(conn);
+            return;
+        }
+
+        MYSQL_BIND params[2];
+        memset(params, 0, sizeof(params));
+        params[0].buffer_type = MYSQL_TYPE_STRING;
+        params[0].buffer = name;
+        params[0].buffer_length = strlen(name);
+        params[1].buffer_type = MYSQL_TYPE_STRING;
+        params[1].buffer = corso;
+        params[1].buffer_length = strlen(corso);
+
+        if (mysql_stmt_bind_param(stmt, params) != 0) {
+            const char *err = mysql_error(conn);
+            write(connfd, err, strlen(err) + 1);
+            mysql_stmt_close(stmt);
+            mysql_close(conn);
+            return;
+        }
+
+
+        if (mysql_stmt_execute(stmt) != 0) {
+            const char *err = mysql_error(conn);
+            write(connfd, err, strlen(err) + 1);
+            mysql_stmt_close(stmt);
+            mysql_close(conn);
+            return;
+        }else{// Chiusura dello statement
+            const char *ins = "inserimento del nuovo esame completato con successo!";
+            write(connfd, ins, strlen(ins) + 1);
+            mysql_stmt_close(stmt);
+            mysql_close(conn);}
+
+
+
+
 
     }
 
