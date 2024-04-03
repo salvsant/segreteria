@@ -7,16 +7,13 @@
 #include <mysql/mysql.h>
 #include <pthread.h>
 
-typedef struct {
-    int connfd;
-} Client_stud;
+MYSQL *connection();
 
 int main() {
-    int sockfd, listenfd;
-    int dim = 0;
-    struct sockaddr_in servaddr, secaddr;
-    MYSQL *conn;
-    Client_stud client_sockets[4096];
+    int listenfd,connfd=-1;
+    int request;
+    struct sockaddr_in servaddr;
+
 
 
     printf("Hello, World!\n");
