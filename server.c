@@ -7,8 +7,10 @@
 #include <mysql/mysql.h>
 #include <pthread.h>
 
+void addExamSession(int);
+void addBooking(int);
+void addExam(int);
 MYSQL *connection();
-
 int main() {
     int listenfd,connfd=-1;
     int request;
@@ -37,7 +39,9 @@ int main() {
     max_fd = listenfd;
 
 
-
+/*
+ * ciclo while "infinito" per instaurare nuove connessioni
+ */
     while(1) {
 
         FD_ZERO(&read_set);
@@ -65,6 +69,20 @@ int main() {
                 max_fd = connfd;
             }
         }
+        if (FD_ISSET(connfd, &read_set)) {
+
+            if (read(connfd, &request, sizeof(request)) > 0) {
+
+                if (request == 1) {
+                    addExamSession(connfd);
+                } else if (request == 2) {
+                    addBooking(connfd);
+                } else if (request == 3){
+                    addExam(connfd);
+                }
+            }
+        }
+    }
 
 
 
