@@ -5,3 +5,10 @@
 #include <sys/socket.h>
 #include <string.h>
 
+
+int main (int argc, char **argv) {
+    int sockfd;
+    int request, req;
+    struct sockaddr_in servaddr;
+    int c;
+}
