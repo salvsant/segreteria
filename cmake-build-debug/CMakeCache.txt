@@ -130,7 +130,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=untitled4
+CMAKE_PROJECT_NAME:STATIC=ProgettoSegreteria
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -194,11 +194,26 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Path to a file.
+MYSQL_INCLUDE_DIR:PATH=/usr/include/mysql
+
+//Path to a library.
+MYSQL_LIBRARY_PATH:FILEPATH=/usr/lib/x86_64-linux-gnu/libmysqlclient.so
+
 //Path to a program.
 ProcessorCount_cmd_nproc:FILEPATH=/usr/bin/nproc
 
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/usr/sbin/sysctl
+
+//Value Computed by CMake
+ProgettoSegreteria_BINARY_DIR:STATIC=/tmp/segreteria10/cmake-build-debug
+
+//Value Computed by CMake
+ProgettoSegreteria_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+ProgettoSegreteria_SOURCE_DIR:STATIC=/tmp/segreteria10
 
 //Value Computed by CMake
 untitled4_BINARY_DIR:STATIC=/tmp/segreteria10/cmake-build-debug
