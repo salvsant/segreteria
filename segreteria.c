@@ -138,7 +138,6 @@ int main(int argc, char **argv) {
                     FD_SET(client_sockets[dim].connfd, &master_set);
                     max_fd = max(max_fd, client_sockets[dim].connfd);
 
-
                     dim++;
 
                 }
@@ -147,10 +146,46 @@ int main(int argc, char **argv) {
                 break;
             }
 
+            for (int i=0; i < dim; i++) {
 
-}
+
+                if (FD_ISSET(client_sockets[i].connfd, &read_set) && client_sockets[i].connfd != -1) {
+
+
+
+                    read(client_sockets[i].connfd, &behaviour, sizeof(behaviour));
+
+
+                    if (behaviour == 1) {
+
+                        int req;
+                        read(client_sockets[i].connfd, &req, sizeof(req));
+
+                        char query[500];
+
+
+                        if (req == 1) {
+                            snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') FROM exam_sessions");
+
+                            if (mysql_query(conn, query) != 0) {
+                                fprintf(stderr, "mysql_query() fallita\n");
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
     }
 }
+
+
+
+
+
 
 
 
