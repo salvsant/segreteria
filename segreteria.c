@@ -9,6 +9,9 @@
 #include <string.h>
 #include <mysql/mysql.h>
 
+#define max(x, y) ({typeof (x) x_ = (x); typeof (y) y_ = (y); \
+x_ > y_ ? x_ : y_;})
+
 typedef struct {
     int connfd;
 } Client_stud;
@@ -89,6 +92,21 @@ int main(int argc, char **argv) {
         mysql_close(conn);
         exit(1);
     }
+
+    fd_set read_set, write_set, master_set;
+    int max_fd;
+
+
+    FD_ZERO(&master_set);
+
+    FD_SET(sockfd, &master_set);
+    max_fd = sockfd;
+
+    FD_SET(listenfd, &master_set);
+    max_fd = max(max_fd, listenfd);
+
+
+
 
 }
 
