@@ -171,8 +171,33 @@ int main() {
 
     }
 
+MYSQL *connection() {
+    /**
+     * Inizializzazione della connessione MySQL, con la funzione init che restituisce un puntatore a questa struttura.
+     */
+    MYSQL *conn = mysql_init(NULL);
 
-   // printf("Hello, World!\n");
+    if (conn == NULL) {
+        fprintf(stderr, "mysql_init() fallita\n");
+        exit(1);
+    }
+
+    /**
+     * Connessione vera e propria al database MySQL specificato da host, user, password e nome dello schema.
+     */
+    if (mysql_real_connect(conn, "87.11.19.92", "admin", "admin", "nuova_segreteria", 3306, NULL, 0) == NULL) {
+        fprintf(stderr, "mysql_real_connect() fallita: %s\n", mysql_error(conn));
+        mysql_close(conn);
+        exit(1);
+    }
+
+    return conn;
+}
+
+
+
+
+// printf("Hello, World!\n");
     //printf("test commit");
     //return 0;
 
