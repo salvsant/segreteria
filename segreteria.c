@@ -8,3 +8,7 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <mysql/mysql.h>
+
+int main(int argc, char **argv) {
+
+}
