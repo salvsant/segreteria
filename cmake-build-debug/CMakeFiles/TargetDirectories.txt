@@ -1,5 +1,5 @@
-/tmp/untitled4/cmake-build-debug/CMakeFiles/server.dir
-/tmp/untitled4/cmake-build-debug/CMakeFiles/studente.dir
-/tmp/untitled4/cmake-build-debug/CMakeFiles/segreteria.dir
-/tmp/untitled4/cmake-build-debug/CMakeFiles/edit_cache.dir
-/tmp/untitled4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/server.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/studente.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/segreteria.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/edit_cache.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/rebuild_cache.dir
