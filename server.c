@@ -84,9 +84,25 @@ int main() {
         }
     }
 
+    void addExamSession{
 
 
 
+    }
+
+
+    void addExam{
+
+
+    }
+
+
+    void addBooking(int connfd) {
+
+
+
+
+    }
 
 
     printf("Hello, World!\n");
