@@ -32,6 +32,11 @@ int main() {
         exit(1);
     }
 
+    fd_set read_set;
+    int max_fd;
+    max_fd = listenfd;
+
+
     printf("Hello, World!\n");
     printf("test commit");
     return 0;
