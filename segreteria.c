@@ -9,6 +9,15 @@
 #include <string.h>
 #include <mysql/mysql.h>
 
-int main(int argc, char **argv) {
+typedef struct {
+    int connfd;
+} Client_stud;
 
+int main(int argc, char **argv) {
+    int sockfd, listenfd;
+    int behaviour;
+    int logical = 0;
+    struct sockaddr_in servaddr, secaddr;
+    MYSQL *conn;
+    Client_stud client_sockets[4096];
 }
