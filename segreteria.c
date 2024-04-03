@@ -105,12 +105,52 @@ int main(int argc, char **argv) {
     FD_SET(listenfd, &master_set);
     max_fd = max(max_fd, listenfd);
 
-    while(1) {
+    while(1)
+    {
         read_set = master_set;
         write_set = master_set;
 
+        while (1) {
+            /**
+             * La funzione select restituisce il numero di descrittori pronti, a partire dagli "insiemi" di descrittori
+             * passati.
+             */
+            if (select(max_fd + 1, &read_set, &write_set, NULL, NULL) < 0) {
+                perror("Errore nell'operazione di select!");
+            }
+
+            /**
+             * Si controlla se il descrittore listenfd, ossia quello che monitora le nuove richieste di connessioni,
+             * sia pronto, il che è vero quando appunto ci sono nuove connessioni in attesa.
+             */
+            if (FD_ISSET(listenfd, &read_set)) {
+                /**
+                 * La system call accept permette di accettare una nuova connessione (lato server) in entrata da un client.
+                 */
+                if ((client_sockets[dim].connfd = accept(listenfd, (struct sockaddr *)NULL, NULL)) < 0) {
+                    perror("Errore nell'operazione di accept!");
+                }
+                else {
+                    /**
+                     * Si aggiunge il descrittore legato alla nuova connessione da uno studente all'interno dell'array di
+                     * descrittori master_set e si ricalcola il numero di posizioni da controllare nella select.
+                     */
+                    FD_SET(client_sockets[dim].connfd, &master_set);
+                    max_fd = max(max_fd, client_sockets[dim].connfd);
+
+
+                    dim++;
+
+                }
+            }
+            else {
+                break;
+            }
 
 
 }
+    }
+}
+
 
 
