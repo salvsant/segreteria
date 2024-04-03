@@ -1,5 +1,5 @@
-/tmp/segreteria10/cmake-build-debug/CMakeFiles/server.dir
-/tmp/segreteria10/cmake-build-debug/CMakeFiles/studente.dir
-/tmp/segreteria10/cmake-build-debug/CMakeFiles/segreteria.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/server_exec.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/segretaria_exec.dir
+/tmp/segreteria10/cmake-build-debug/CMakeFiles/studente_exec.dir
 /tmp/segreteria10/cmake-build-debug/CMakeFiles/edit_cache.dir
 /tmp/segreteria10/cmake-build-debug/CMakeFiles/rebuild_cache.dir

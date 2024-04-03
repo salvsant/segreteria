@@ -12,18 +12,18 @@ void addBooking(int);
 void addExam(int);
 MYSQL *connection();
 int main() {
-    int listenfd,connfd=-1;
+    int listenfd, connfd = -1;
     int request;
     struct sockaddr_in servaddr;
 
     //errore creazione socket
-    if ((listenfd = socket(AF_INET,SOCK_STREAM,0)) < 0) {
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Errore nella creazione della socket!");
         exit(1);
     }
 
     //errore operazione bind
-    if ((bind(listenfd, (struct sockaddr *)&servaddr, sizeof (servaddr))) < 0) {
+    if ((bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr))) < 0) {
         perror("Errore nell'operazione di bind!");
         exit(1);
     }
@@ -42,7 +42,7 @@ int main() {
 /*
  * ciclo while "infinito" per instaurare nuove connessioni
  */
-    while(1) {
+    while (1) {
 
         FD_ZERO(&read_set);
         FD_SET(listenfd, &read_set);
@@ -60,7 +60,7 @@ int main() {
 
         if (FD_ISSET(listenfd, &read_set)) {
 
-            if ((connfd = accept(listenfd, (struct sockaddr *)NULL, NULL)) < 0) {
+            if ((connfd = accept(listenfd, (struct sockaddr *) NULL, NULL)) < 0) {
                 perror("Errore nell'operazione di accept!");
             }
 
@@ -77,12 +77,13 @@ int main() {
                     addExamSession(connfd);
                 } else if (request == 2) {
                     addBooking(connfd);
-                } else if (request == 3){
+                } else if (request == 3) {
                     addExam(connfd);
                 }
             }
         }
     }
+}
 
     void addExamSession(int connfd) {
         MYSQL *conn = connection();
@@ -152,7 +153,12 @@ int main() {
 
 
 
-    void addExam{
+    void addExam(int connfd){
+        MYSQL *conn = connection();
+        char name[255] = {0};
+        char corso[255]= {0};
+        read(connfd, name, sizeof(name));
+        read(connfd, corso, sizeof(corso));
 
 
     }
@@ -169,4 +175,4 @@ int main() {
    // printf("Hello, World!\n");
     //printf("test commit");
     //return 0;
-}
+

@@ -117,50 +117,50 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named server
+# Target rules for targets named server_exec
 
 # Build rule for target.
-server: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
-.PHONY : server
+server_exec: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server_exec
+.PHONY : server_exec
 
 # fast build rule for target.
-server/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
-.PHONY : server/fast
+server_exec/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_exec.dir/build.make CMakeFiles/server_exec.dir/build
+.PHONY : server_exec/fast
 
 #=============================================================================
-# Target rules for targets named studente
+# Target rules for targets named segretaria_exec
 
 # Build rule for target.
-studente: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 studente
-.PHONY : studente
+segretaria_exec: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 segretaria_exec
+.PHONY : segretaria_exec
 
 # fast build rule for target.
-studente/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/build
-.PHONY : studente/fast
+segretaria_exec/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segretaria_exec.dir/build.make CMakeFiles/segretaria_exec.dir/build
+.PHONY : segretaria_exec/fast
 
 #=============================================================================
-# Target rules for targets named segreteria
+# Target rules for targets named studente_exec
 
 # Build rule for target.
-segreteria: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 segreteria
-.PHONY : segreteria
+studente_exec: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 studente_exec
+.PHONY : studente_exec
 
 # fast build rule for target.
-segreteria/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/build
-.PHONY : segreteria/fast
+studente_exec/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente_exec.dir/build.make CMakeFiles/studente_exec.dir/build
+.PHONY : studente_exec/fast
 
 segreteria.o: segreteria.c.o
 .PHONY : segreteria.o
 
 # target to build an object file
 segreteria.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segretaria_exec.dir/build.make CMakeFiles/segretaria_exec.dir/segreteria.c.o
 .PHONY : segreteria.c.o
 
 segreteria.i: segreteria.c.i
@@ -168,7 +168,7 @@ segreteria.i: segreteria.c.i
 
 # target to preprocess a source file
 segreteria.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segretaria_exec.dir/build.make CMakeFiles/segretaria_exec.dir/segreteria.c.i
 .PHONY : segreteria.c.i
 
 segreteria.s: segreteria.c.s
@@ -176,7 +176,7 @@ segreteria.s: segreteria.c.s
 
 # target to generate assembly for a file
 segreteria.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segretaria_exec.dir/build.make CMakeFiles/segretaria_exec.dir/segreteria.c.s
 .PHONY : segreteria.c.s
 
 server.o: server.c.o
@@ -184,7 +184,7 @@ server.o: server.c.o
 
 # target to build an object file
 server.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_exec.dir/build.make CMakeFiles/server_exec.dir/server.c.o
 .PHONY : server.c.o
 
 server.i: server.c.i
@@ -192,7 +192,7 @@ server.i: server.c.i
 
 # target to preprocess a source file
 server.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_exec.dir/build.make CMakeFiles/server_exec.dir/server.c.i
 .PHONY : server.c.i
 
 server.s: server.c.s
@@ -200,7 +200,7 @@ server.s: server.c.s
 
 # target to generate assembly for a file
 server.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_exec.dir/build.make CMakeFiles/server_exec.dir/server.c.s
 .PHONY : server.c.s
 
 studente.o: studente.c.o
@@ -208,7 +208,7 @@ studente.o: studente.c.o
 
 # target to build an object file
 studente.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente_exec.dir/build.make CMakeFiles/studente_exec.dir/studente.c.o
 .PHONY : studente.c.o
 
 studente.i: studente.c.i
@@ -216,7 +216,7 @@ studente.i: studente.c.i
 
 # target to preprocess a source file
 studente.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente_exec.dir/build.make CMakeFiles/studente_exec.dir/studente.c.i
 .PHONY : studente.c.i
 
 studente.s: studente.c.s
@@ -224,7 +224,7 @@ studente.s: studente.c.s
 
 # target to generate assembly for a file
 studente.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente_exec.dir/build.make CMakeFiles/studente_exec.dir/studente.c.s
 .PHONY : studente.c.s
 
 # Help Target
@@ -235,9 +235,9 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... segreteria"
-	@echo "... server"
-	@echo "... studente"
+	@echo "... segretaria_exec"
+	@echo "... server_exec"
+	@echo "... studente_exec"
 	@echo "... segreteria.o"
 	@echo "... segreteria.i"
 	@echo "... segreteria.s"
