@@ -3,4 +3,9 @@ project(untitled4 C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(untitled4 main.c)
+add_executable(server server.c)
+add_executable(studente studente.c)
+add_executable(segreteria segreteria.c
+        segreteria.c)
+
+

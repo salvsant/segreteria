@@ -117,41 +117,115 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named untitled4
+# Target rules for targets named server
 
 # Build rule for target.
-untitled4: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 untitled4
-.PHONY : untitled4
+server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
+.PHONY : server
 
 # fast build rule for target.
-untitled4/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/build
-.PHONY : untitled4/fast
+server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
 
-main.o: main.c.o
-.PHONY : main.o
+#=============================================================================
+# Target rules for targets named studente
+
+# Build rule for target.
+studente: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 studente
+.PHONY : studente
+
+# fast build rule for target.
+studente/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/build
+.PHONY : studente/fast
+
+#=============================================================================
+# Target rules for targets named segreteria
+
+# Build rule for target.
+segreteria: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 segreteria
+.PHONY : segreteria
+
+# fast build rule for target.
+segreteria/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/build
+.PHONY : segreteria/fast
+
+segreteria.o: segreteria.c.o
+.PHONY : segreteria.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/main.c.o
-.PHONY : main.c.o
+segreteria.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.o
+.PHONY : segreteria.c.o
 
-main.i: main.c.i
-.PHONY : main.i
+segreteria.i: segreteria.c.i
+.PHONY : segreteria.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/main.c.i
-.PHONY : main.c.i
+segreteria.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.i
+.PHONY : segreteria.c.i
 
-main.s: main.c.s
-.PHONY : main.s
+segreteria.s: segreteria.c.s
+.PHONY : segreteria.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/main.c.s
-.PHONY : main.c.s
+segreteria.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/segreteria.c.s
+.PHONY : segreteria.c.s
+
+server.o: server.c.o
+.PHONY : server.o
+
+# target to build an object file
+server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.o
+.PHONY : server.c.o
+
+server.i: server.c.i
+.PHONY : server.i
+
+# target to preprocess a source file
+server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.i
+.PHONY : server.c.i
+
+server.s: server.c.s
+.PHONY : server.s
+
+# target to generate assembly for a file
+server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server.c.s
+.PHONY : server.c.s
+
+studente.o: studente.c.o
+.PHONY : studente.o
+
+# target to build an object file
+studente.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.o
+.PHONY : studente.c.o
+
+studente.i: studente.c.i
+.PHONY : studente.i
+
+# target to preprocess a source file
+studente.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.i
+.PHONY : studente.c.i
+
+studente.s: studente.c.s
+.PHONY : studente.s
+
+# target to generate assembly for a file
+studente.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/studente.c.s
+.PHONY : studente.c.s
 
 # Help Target
 help:
@@ -161,10 +235,18 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... untitled4"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... segreteria"
+	@echo "... server"
+	@echo "... studente"
+	@echo "... segreteria.o"
+	@echo "... segreteria.i"
+	@echo "... segreteria.s"
+	@echo "... server.o"
+	@echo "... server.i"
+	@echo "... server.s"
+	@echo "... studente.o"
+	@echo "... studente.i"
+	@echo "... studente.s"
 .PHONY : help
 
 

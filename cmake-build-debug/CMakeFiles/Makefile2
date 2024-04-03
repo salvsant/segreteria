@@ -63,7 +63,9 @@ CMAKE_BINARY_DIR = /tmp/untitled4/cmake-build-debug
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/untitled4.dir/all
+all: CMakeFiles/server.dir/all
+all: CMakeFiles/studente.dir/all
+all: CMakeFiles/segreteria.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +73,88 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/untitled4.dir/clean
+clean: CMakeFiles/server.dir/clean
+clean: CMakeFiles/studente.dir/clean
+clean: CMakeFiles/segreteria.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/untitled4.dir
+# Target rules for target CMakeFiles/server.dir
 
 # All Build rule for target.
-CMakeFiles/untitled4.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/untitled4/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target untitled4"
-.PHONY : CMakeFiles/untitled4.dir/all
+CMakeFiles/server.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/untitled4/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target server"
+.PHONY : CMakeFiles/server.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/untitled4.dir/rule: cmake_check_build_system
+CMakeFiles/server.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/untitled4.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/server.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/untitled4.dir/rule
+.PHONY : CMakeFiles/server.dir/rule
 
 # Convenience name for target.
-untitled4: CMakeFiles/untitled4.dir/rule
-.PHONY : untitled4
+server: CMakeFiles/server.dir/rule
+.PHONY : server
 
 # clean rule for target.
-CMakeFiles/untitled4.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled4.dir/build.make CMakeFiles/untitled4.dir/clean
-.PHONY : CMakeFiles/untitled4.dir/clean
+CMakeFiles/server.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/clean
+.PHONY : CMakeFiles/server.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/studente.dir
+
+# All Build rule for target.
+CMakeFiles/studente.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/untitled4/cmake-build-debug/CMakeFiles --progress-num=5,6 "Built target studente"
+.PHONY : CMakeFiles/studente.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/studente.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/studente.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/studente.dir/rule
+
+# Convenience name for target.
+studente: CMakeFiles/studente.dir/rule
+.PHONY : studente
+
+# clean rule for target.
+CMakeFiles/studente.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/studente.dir/build.make CMakeFiles/studente.dir/clean
+.PHONY : CMakeFiles/studente.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/segreteria.dir
+
+# All Build rule for target.
+CMakeFiles/segreteria.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/untitled4/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target segreteria"
+.PHONY : CMakeFiles/segreteria.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/segreteria.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/segreteria.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/untitled4/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/segreteria.dir/rule
+
+# Convenience name for target.
+segreteria: CMakeFiles/segreteria.dir/rule
+.PHONY : segreteria
+
+# clean rule for target.
+CMakeFiles/segreteria.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/segreteria.dir/build.make CMakeFiles/segreteria.dir/clean
+.PHONY : CMakeFiles/segreteria.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
