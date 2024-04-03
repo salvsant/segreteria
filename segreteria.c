@@ -53,7 +53,36 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+    if ((listenfd = socket(AF_INET,SOCK_STREAM,0)) < 0) {
+        perror("Errore nella creazione della socket!");
+        exit(1);
+    }
 
+
+    secaddr.sin_family = AF_INET;
+    secaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    secaddr.sin_port = htons(1026);
+
+
+    if ((bind(listenfd, (struct sockaddr *)&secaddr, sizeof (secaddr))) < 0) {
+        perror("Errore nell'operazione di bind!");
+        exit(1);
+    }
+
+
+    if ((listen(listenfd, 5)) < 0) {
+        perror("Errore nell'operazione di listen!");
+        exit(1);
+    }
+
+
+    conn = mysql_init(NULL);
+
+    if (conn == NULL) {
+
+        fprintf(stderr, "mysql_init() fallita\n");
+        exit(1);
+    }
 
 
 }
