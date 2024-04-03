@@ -41,4 +41,6 @@ int main (int argc, char **argv) {
         printf("Connessione stabilita!\n");
     }
 
+    //while (1) {
+
 }
