@@ -84,6 +84,11 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+    if (mysql_real_connect(conn, "87.11.19.92", "admin", "admin", "nuova_segreteria", 3306, NULL, 0) == NULL) {
+        fprintf(stderr, "mysql_real_connect() fallita: %s\n", mysql_error(conn));
+        mysql_close(conn);
+        exit(1);
+    }
 
 }
 
