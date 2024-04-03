@@ -84,8 +84,16 @@ int main() {
         }
     }
 
-    void addExamSession{
+    void addExamSession(int connfd) {
+        MYSQL *conn = connection();
 
+        char name[255] = {0};
+        char date[12] = {0};
+
+        // Leggi il nome dell'esame dalla socket
+        read(connfd, name, sizeof(name));
+        // Leggi la data dell'appello dalla socket
+        read(connfd, date, sizeof(date));
 
 
     }
