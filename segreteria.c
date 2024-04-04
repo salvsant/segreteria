@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
     char date[12] = {0};
     char result[255] = {0};
     char corso[255];
+    struct timeval timeout;
     struct sockaddr_in servaddr, secaddr;
     MYSQL *conn;
     Client_stud client_sockets[4096];
@@ -268,11 +269,47 @@ int main(int argc, char **argv) {
             }
         }
 
+        if (FD_ISSET(sockfd, &write_set)) {
+
+            FD_ZERO(&read_set);
+            FD_SET(STDIN_FILENO, &read_set);
+
+                if(test == 0) {
+                printf("Vuoi gestire le richieste degli studenti o inserire un nuovo appello?\n");
+                printf("Digitare qualsiasi numero - Gestire le richieste degli studenti\n");
+                printf("2 - Inserire un nuovo appello\n");
+                printf("3- Inserisci un esame\n");
+                printf("Scelta: ");
+                test = 1;}
+
+
+            timeout.tv_sec = 1; // 1 secondo timeout
+            timeout.tv_usec = 0;
+
+
+            if(test == 1){
+                int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                if (ready == -1) {
+                    perror("select");
+                    return 1;
+                } else if (ready == 0) {
+
+                    continue;
+                }
+
+
+
+
+                scanf("%d", &logical);
+
+
+
+
+                printf("\n");
+
                 }
             }
-        }
-    }
-}
+
 
 
 
