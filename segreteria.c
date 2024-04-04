@@ -175,6 +175,98 @@ int main(int argc, char **argv) {
                         }
 
                     }
+                    else if (req == 2) {
+                        char exam[255] = {0};
+                        /**
+                         * La segreteria riceve il nome dell'esame di cui lo studente vuole visualizzare gli appelli
+                         * disponibili.
+                         */
+                        read(client_sockets[i].connfd, exam, sizeof(exam));
+
+                        snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') "
+                                                       "FROM exam_sessions "
+                                                       "WHERE exam_session_name IN  (SELECT exam_name FROM exams WHERE nome_corso = '%s')", exam);
+
+
+                        if (mysql_query(conn, query) != 0) {
+                            fprintf(stderr, "mysql_query() fallita\n");
+                        }
+                    }
+
+                    MYSQL_RES *res2 = mysql_store_result(conn);
+                    if (res2 == NULL) {
+                        fprintf(stderr, "mysql_store_result() fallita\n");
+                    }
+                    else {
+                        /**
+                         * Inviamo allo studente il numero di righe risultanti dalla query, in modo che lo studente
+                         * possa visualizzare correttamente tutti i campi degli appelli disponibili.
+                         */
+                        unsigned int num_rows = mysql_num_rows(res2);
+                        write(client_sockets[i].connfd, &num_rows, sizeof(num_rows));
+
+                        char exam_name[255];
+                        char exam_date[12];
+
+                        /**
+                         * Inviamo allo studente tutti i campi di tutte le righe risultanti dalla query.
+                         */
+                        MYSQL_ROW row;
+                        while ((row = mysql_fetch_row(res2))) {
+                            sscanf(row[0], "%[^\n]", exam_name);
+                            sscanf(row[1], "%s", exam_date);
+                            write(client_sockets[i].connfd, exam_name, sizeof(exam_name));
+                            write(client_sockets[i].connfd, exam_date, sizeof(exam_date));
+                        }
+                    }
+
+                    mysql_free_result(res2);
+                }
+
+                else if (behaviour == 2) {
+                    char exam_name[255], exam_date[255];
+                    char res[255] = {0};
+
+
+                    write(sockfd, &behaviour, sizeof(behaviour));
+                    perror("behaviour");
+
+
+
+                    read(client_sockets[i].connfd, exam_name, sizeof(exam_name));
+                    perror("read1");
+
+                    read(client_sockets[i].connfd, exam_date, sizeof(exam_date));
+                    perror("read2");
+
+
+
+                    write(sockfd, exam_name, sizeof(exam_name));
+                    perror("write1");
+
+                    write(sockfd, exam_date, sizeof(exam_date));
+                    perror("write2");
+
+
+
+                    read(sockfd, res, sizeof(res));
+                    perror("readserver");
+
+
+
+                    write(client_sockets[i].connfd, res, sizeof(res));
+                    perror("write");
+
+
+
+                    if (strcmp(res, "Inserimento della nuova prenotazione completato con successo!") == 0) {
+                        int count;
+                        read(sockfd, &count, sizeof(count));
+                        write(client_sockets[i].connfd, &count, sizeof(count));
+                    }
+                }
+            }
+        }
 
                 }
             }
