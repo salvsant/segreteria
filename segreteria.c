@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
     char date[12] = {0};
     char result[255] = {0};
     char corso[255];
+    struct timeval timeout;
     struct sockaddr_in servaddr, secaddr;
     MYSQL *conn;
     Client_stud client_sockets[4096];
@@ -138,7 +139,6 @@ int main(int argc, char **argv) {
                     FD_SET(client_sockets[dim].connfd, &master_set);
                     max_fd = max(max_fd, client_sockets[dim].connfd);
 
-
                     dim++;
 
                 }
@@ -147,10 +147,174 @@ int main(int argc, char **argv) {
                 break;
             }
 
+            for (int i=0; i < dim; i++) {
 
-}
-    }
-}
+
+                if (FD_ISSET(client_sockets[i].connfd, &read_set) && client_sockets[i].connfd != -1) {
+
+
+
+                    read(client_sockets[i].connfd, &behaviour, sizeof(behaviour));
+
+
+                    if (behaviour == 1) {
+
+                        int req;
+                        read(client_sockets[i].connfd, &req, sizeof(req));
+
+                        char query[500];
+
+
+                        if (req == 1) {
+                            snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') FROM exam_sessions");
+
+                            if (mysql_query(conn, query) != 0) {
+                                fprintf(stderr, "mysql_query() fallita\n");
+
+                            }
+
+                        }
+
+                    }
+                    else if (req == 2) {
+                        char exam[255] = {0};
+                        /**
+                         * La segreteria riceve il nome dell'esame di cui lo studente vuole visualizzare gli appelli
+                         * disponibili.
+                         */
+                        read(client_sockets[i].connfd, exam, sizeof(exam));
+
+                        snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') "
+                                                       "FROM exam_sessions "
+                                                       "WHERE exam_session_name IN  (SELECT exam_name FROM exams WHERE nome_corso = '%s')", exam);
+
+
+                        if (mysql_query(conn, query) != 0) {
+                            fprintf(stderr, "mysql_query() fallita\n");
+                        }
+                    }
+
+                    MYSQL_RES *res2 = mysql_store_result(conn);
+                    if (res2 == NULL) {
+                        fprintf(stderr, "mysql_store_result() fallita\n");
+                    }
+                    else {
+                        /**
+                         * Inviamo allo studente il numero di righe risultanti dalla query, in modo che lo studente
+                         * possa visualizzare correttamente tutti i campi degli appelli disponibili.
+                         */
+                        unsigned int num_rows = mysql_num_rows(res2);
+                        write(client_sockets[i].connfd, &num_rows, sizeof(num_rows));
+
+                        char exam_name[255];
+                        char exam_date[12];
+
+                        /**
+                         * Inviamo allo studente tutti i campi di tutte le righe risultanti dalla query.
+                         */
+                        MYSQL_ROW row;
+                        while ((row = mysql_fetch_row(res2))) {
+                            sscanf(row[0], "%[^\n]", exam_name);
+                            sscanf(row[1], "%s", exam_date);
+                            write(client_sockets[i].connfd, exam_name, sizeof(exam_name));
+                            write(client_sockets[i].connfd, exam_date, sizeof(exam_date));
+                        }
+                    }
+
+                    mysql_free_result(res2);
+                }
+
+                else if (behaviour == 2) {
+                    char exam_name[255], exam_date[255];
+                    char res[255] = {0};
+
+
+                    write(sockfd, &behaviour, sizeof(behaviour));
+                    perror("behaviour");
+
+
+
+                    read(client_sockets[i].connfd, exam_name, sizeof(exam_name));
+                    perror("read1");
+
+                    read(client_sockets[i].connfd, exam_date, sizeof(exam_date));
+                    perror("read2");
+
+
+
+                    write(sockfd, exam_name, sizeof(exam_name));
+                    perror("write1");
+
+                    write(sockfd, exam_date, sizeof(exam_date));
+                    perror("write2");
+
+
+
+                    read(sockfd, res, sizeof(res));
+                    perror("readserver");
+
+
+
+                    write(client_sockets[i].connfd, res, sizeof(res));
+                    perror("write");
+
+
+
+                    if (strcmp(res, "Inserimento della nuova prenotazione completato con successo!") == 0) {
+                        int count;
+                        read(sockfd, &count, sizeof(count));
+                        write(client_sockets[i].connfd, &count, sizeof(count));
+                    }
+                }
+            }
+        }
+
+        if (FD_ISSET(sockfd, &write_set)) {
+
+            FD_ZERO(&read_set);
+            FD_SET(STDIN_FILENO, &read_set);
+
+                if(test == 0) {
+                printf("Vuoi gestire le richieste degli studenti o inserire un nuovo appello?\n");
+                printf("Digitare qualsiasi numero - Gestire le richieste degli studenti\n");
+                printf("2 - Inserire un nuovo appello\n");
+                printf("3- Inserisci un esame\n");
+                printf("Scelta: ");
+                test = 1;}
+
+
+            timeout.tv_sec = 1; // 1 secondo timeout
+            timeout.tv_usec = 0;
+
+
+            if(test == 1){
+                int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                if (ready == -1) {
+                    perror("select");
+                    return 1;
+                } else if (ready == 0) {
+
+                    continue;
+                }
+
+
+
+
+                scanf("%d", &logical);
+
+
+
+
+                printf("\n");
+
+                }
+            }
+
+
+
+
+
+
 
 
 
