@@ -19,18 +19,19 @@ typedef struct {
 int main(int argc, char **argv) {
     int sockfd, listenfd;
     int behaviour;
+    int logical = 0;
     int dim = 0;
     int test = 0;
-    int logical = 0;
+    struct sockaddr_in servaddr, secaddr;
+    struct timeval timeout;
     char name[255] = {0};
     char date[12] = {0};
     char result[255] = {0};
     char corso[255];
-    struct timeval timeout;
-    struct sockaddr_in servaddr, secaddr;
     MYSQL *conn;
     Client_stud client_sockets[4096];
 
+    // SEGRETERIA CLIENT
 
     if (argc != 2) {
         fprintf(stderr, "Utilizzo: %s <indirizzoIP>\n", argv[0]);
@@ -51,11 +52,13 @@ int main(int argc, char **argv) {
     }
     servaddr.sin_port = htons(1025);
 
-
     if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
         perror("Errore nell'operazione di connect!");
         exit(1);
     }
+
+
+    // SEGRETERIA SERVER
 
     if ((listenfd = socket(AF_INET,SOCK_STREAM,0)) < 0) {
         perror("Errore nella creazione della socket!");
@@ -88,11 +91,13 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+
     if (mysql_real_connect(conn, "87.11.19.92", "admin", "admin", "nuova_segreteria", 3306, NULL, 0) == NULL) {
         fprintf(stderr, "mysql_real_connect() fallita: %s\n", mysql_error(conn));
         mysql_close(conn);
         exit(1);
     }
+
 
     fd_set read_set, write_set, master_set;
     int max_fd;
@@ -106,38 +111,27 @@ int main(int argc, char **argv) {
     FD_SET(listenfd, &master_set);
     max_fd = max(max_fd, listenfd);
 
-    while(1)
-    {
+    while(1) {
         read_set = master_set;
         write_set = master_set;
 
+
         while (1) {
-            /**
-             * La funzione select restituisce il numero di descrittori pronti, a partire dagli "insiemi" di descrittori
-             * passati.
-             */
+
             if (select(max_fd + 1, &read_set, &write_set, NULL, NULL) < 0) {
                 perror("Errore nell'operazione di select!");
             }
 
-            /**
-             * Si controlla se il descrittore listenfd, ossia quello che monitora le nuove richieste di connessioni,
-             * sia pronto, il che è vero quando appunto ci sono nuove connessioni in attesa.
-             */
             if (FD_ISSET(listenfd, &read_set)) {
-                /**
-                 * La system call accept permette di accettare una nuova connessione (lato server) in entrata da un client.
-                 */
+
                 if ((client_sockets[dim].connfd = accept(listenfd, (struct sockaddr *)NULL, NULL)) < 0) {
                     perror("Errore nell'operazione di accept!");
                 }
                 else {
-                    /**
-                     * Si aggiunge il descrittore legato alla nuova connessione da uno studente all'interno dell'array di
-                     * descrittori master_set e si ricalcola il numero di posizioni da controllare nella select.
-                     */
+
                     FD_SET(client_sockets[dim].connfd, &master_set);
                     max_fd = max(max_fd, client_sockets[dim].connfd);
+
 
                     dim++;
 
@@ -146,42 +140,41 @@ int main(int argc, char **argv) {
             else {
                 break;
             }
-
-            for (int i=0; i < dim; i++) {
-
-
-                if (FD_ISSET(client_sockets[i].connfd, &read_set) && client_sockets[i].connfd != -1) {
+        }
 
 
 
-                    read(client_sockets[i].connfd, &behaviour, sizeof(behaviour));
+        for (int i=0; i < dim; i++) {
+
+            if (FD_ISSET(client_sockets[i].connfd, &read_set) && client_sockets[i].connfd != -1) {
 
 
-                    if (behaviour == 1) {
 
-                        int req;
-                        read(client_sockets[i].connfd, &req, sizeof(req));
-
-                        char query[500];
+                read(client_sockets[i].connfd, &behaviour, sizeof(behaviour));
 
 
-                        if (req == 1) {
-                            snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') FROM exam_sessions");
+                if (behaviour == 1) {
 
-                            if (mysql_query(conn, query) != 0) {
-                                fprintf(stderr, "mysql_query() fallita\n");
+                    int req;
+                    read(client_sockets[i].connfd, &req, sizeof(req));
 
-                            }
+
+                    char query[500];
+
+
+                    if (req == 1) {
+                        snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') FROM exam_sessions");
+
+                        if (mysql_query(conn, query) != 0) {
+                            fprintf(stderr, "mysql_query() fallita\n");
 
                         }
 
                     }
+
                     else if (req == 2) {
                         char exam[255] = {0};
-                        /**
-                         * La segreteria riceve il nome dell'esame di cui lo studente vuole visualizzare gli appelli
-                         * disponibili.
-                         */
+
                         read(client_sockets[i].connfd, exam, sizeof(exam));
 
                         snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') "
@@ -199,19 +192,13 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "mysql_store_result() fallita\n");
                     }
                     else {
-                        /**
-                         * Inviamo allo studente il numero di righe risultanti dalla query, in modo che lo studente
-                         * possa visualizzare correttamente tutti i campi degli appelli disponibili.
-                         */
+
                         unsigned int num_rows = mysql_num_rows(res2);
                         write(client_sockets[i].connfd, &num_rows, sizeof(num_rows));
 
                         char exam_name[255];
                         char exam_date[12];
 
-                        /**
-                         * Inviamo allo studente tutti i campi di tutte le righe risultanti dalla query.
-                         */
                         MYSQL_ROW row;
                         while ((row = mysql_fetch_row(res2))) {
                             sscanf(row[0], "%[^\n]", exam_name);
@@ -269,12 +256,13 @@ int main(int argc, char **argv) {
             }
         }
 
+
         if (FD_ISSET(sockfd, &write_set)) {
 
             FD_ZERO(&read_set);
             FD_SET(STDIN_FILENO, &read_set);
 
-                if(test == 0) {
+            if(test == 0) {
                 printf("Vuoi gestire le richieste degli studenti o inserire un nuovo appello?\n");
                 printf("Digitare qualsiasi numero - Gestire le richieste degli studenti\n");
                 printf("2 - Inserire un nuovo appello\n");
@@ -283,7 +271,7 @@ int main(int argc, char **argv) {
                 test = 1;}
 
 
-            timeout.tv_sec = 1; // 1 secondo timeout
+            timeout.tv_sec = 1; // 1 secondi timeout
             timeout.tv_usec = 0;
 
 
@@ -293,7 +281,7 @@ int main(int argc, char **argv) {
                     perror("select");
                     return 1;
                 } else if (ready == 0) {
-
+                    // Timeout occurred, return to the beginning of the while loop
                     continue;
                 }
 
@@ -307,14 +295,121 @@ int main(int argc, char **argv) {
 
                 printf("\n");
 
-                }
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+
+
+                test =  2;}
+            if (logical == 2) {
+
+                if(test == 2){
+                    int request = 1;
+
+                    write(sockfd, &request, sizeof(request));
+
+                    printf("Inserire il nome dell'esame di cui si vuole aggiungere un appello:\n");
+                    test = 3;}
+
+                if (test == 3){
+
+                    int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                    if (ready == -1) {
+                        perror("select");
+                        return 1;
+                    } else if (ready == 0) {
+                        continue;
+                    }
+
+
+                    fgets(name, sizeof(name), stdin);
+                    name[strlen(name) - 1] = 0;
+
+                    printf("\n");
+
+
+                    write(sockfd, name, strlen(name));
+
+
+                    printf("Inserire la data del nuovo appello (in formato YYYY-MM-DD):\n");
+
+                    test = 4;}
+
+
+                if(test == 4){
+                    int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                    if (ready == -1) {
+                        perror("select");
+                        return 1;
+                    } else if (ready == 0) {
+                        continue;
+                    }
+
+                    fgets(date, sizeof(date), stdin);
+                    date[strlen(date) - 1] = 0;
+
+                    write(sockfd, date, strlen(date));
+
+
+                    read(sockfd, result, sizeof(result));
+
+                    printf("\nEsito: %s\n\n", result);
+                    test = 0;}
             }
+            if (logical == 3) {
+                if(test == 2){
+                    int request = 3;
+
+
+                    write(sockfd, &request, sizeof(request));
+                    printf("Inserire il nome dell'esame che si vuole aggiungere:\n");
+                    test = 3;}
+
+
+                if (test == 3){
+                    int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                    if (ready == -1) {
+                        perror("select");
+                        return 1;
+                    } else if (ready == 0) {
+                        continue;
+                    }
+                    fgets(name, sizeof(name), stdin);
+                    name[strlen(name) - 1] = 0;
+                    printf("\n");
+
+                    write(sockfd, name, strlen(name));
+
+                    printf("Inserire il nome del corso :\n");
+                    test = 4;}
+
+
+                if(test == 4) {
+                    int ready = select(STDIN_FILENO + 1, &read_set, NULL, NULL, &timeout);
+                    if (ready == -1) {
+                        perror("select");
+                        return 1;
+                    } else if (ready == 0) {
+                        continue;
+                    }
+
+                    fgets(corso, sizeof(corso), stdin);
+                    corso[strlen(corso) - 1] = 0;
+
+                    write(sockfd, corso, strlen(corso));
+
+
+                    read(sockfd, result, sizeof(result));
+
+                    printf("\nEsito: %s\n\n", result);
+                    test = 0;
+                }
 
 
 
 
-
-
-
+            }
+        }
+    }
+}
 
 
