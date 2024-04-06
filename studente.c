@@ -17,6 +17,7 @@ int main (int argc, char **argv) {
         fprintf(stderr, "Utilizzo: %s <indirizzoIP>\n", argv[0]);
         exit(1);
     }
+    connessione:
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Errore nella creazione della socket!");
@@ -84,7 +85,7 @@ int main (int argc, char **argv) {
 
             while ((c = getchar()) != '\n' && c != EOF);
 
-          +
+
             if (req == 2) {
                 char exam[255] = {0};
                 printf("\nInserisci nome corso: ");
@@ -130,6 +131,62 @@ int main (int argc, char **argv) {
                     printf("%s\t%s\n", name, date);
                 }
             }
+        }
+
+        else if (request == 2) {
+            char exam_name[255], exam_date[255];
+
+            printf("Digita il nome dell'appello al quale vuoi prenotarti: ");
+            fgets(exam_name,sizeof(exam_name),stdin);
+            exam_name[strcspn(exam_name, "\n")] = 0;
+
+            if (write(sockfd, exam_name, sizeof(exam_name)) < 0) {
+                printf("\nConnessione con la segreteria persa, ritento la connessione...\n");
+                close(sockfd);
+                goto connessione;
+            }
+
+            printf("Digita la data dell'appello al quale vuoi prenotarti: ");
+            fflush(stdin); // Pulisce il buffer di input
+            fgets(exam_date, sizeof(exam_date), stdin);
+            exam_date[strcspn(exam_date, "\n")] = 0; // Rimuove il carattere di nuova riga
+
+            if (write(sockfd, exam_date, sizeof(exam_date)) < 0) {
+                printf("\nConnessione con la segreteria persa, ritento la connessione...\n");
+                close(sockfd);
+                goto connessione;
+            }
+
+            char res[255] = {0};
+
+
+            if (read(sockfd, res, sizeof(res)) < 0) {
+                printf("\nConnessione con la segreteria persa, ritento la connessione...\n");
+                close(sockfd);
+                goto connessione;
+
+            }
+
+            printf("\nEsito operazione: %s\n", res);
+
+            if (strcmp(res, "Inserimento della nuova prenotazione completato con successo!") == 0) {
+                int count;
+                if (read(sockfd, &count, sizeof(count)) < 0) {
+                    printf("Connessione con la segreteria persa, ritento la connessione...\n");
+                    close(sockfd);
+                    goto connessione;
+                }
+
+                printf("Numero prenotazione: %d", count);
+                printf("\n");
+            }
+        }
+
+
+        else if (request == 3) {
+            printf("Programma in chiusura!\n");
+            close(sockfd);
+            exit(1);
         }
     }
 
