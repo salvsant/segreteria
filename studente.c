@@ -13,10 +13,13 @@ int main (int argc, char **argv) {
     struct sockaddr_in servaddr;
     int c;
 
+    //controllo indirizzo ip
+
     if (argc != 2) {
         fprintf(stderr, "Utilizzo: %s <indirizzoIP>\n", argv[0]);
         exit(1);
     }
+    //break per iniziare nuova connessione
     connessione:
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -24,6 +27,8 @@ int main (int argc, char **argv) {
         exit(1);
     }
 
+
+    //specifico la struttura dell'indirizzo del server
 
     servaddr.sin_family = AF_INET;
     if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
@@ -42,6 +47,8 @@ int main (int argc, char **argv) {
         printf("Connessione stabilita!\n");
     }
 
+    //itero le operazioni che lo studente può fare
+
     while (1) {
         printf("\nInserire il numero relativo all'operazione che si vuole effettuare:\n");
         printf("1 - Visualizza appelli disponibili\n");
@@ -51,10 +58,10 @@ int main (int argc, char **argv) {
         scanf("%d", &request);
         printf("\n");
 
-
+        //pulizia buffer input
         while ((c = getchar()) != '\n' && c != EOF);
 
-
+        //invio scelta effettuata segreteria
         if (write(sockfd, &request, sizeof(request)) < 0) {
             printf("Connessione con la segreteria persa, ritento la connessione...\n");
             close(sockfd);
@@ -62,7 +69,7 @@ int main (int argc, char **argv) {
 
         }
 
-
+        //lo studente può scegliere se visualizzare tutti gli appelli o solo quelli di un corso specifico
         if (request == 1) {
             char name[255] = {0};
             char date[12] = {0};
@@ -75,17 +82,20 @@ int main (int argc, char **argv) {
             scanf("%d", &req);
 
 
+            //invio scelta alla segreteria
+
             if (write(sockfd, &req, sizeof(req)) < 0) {
                 printf("Connessione con la segreteria persa, ritento la connessione...\n");
                 close(sockfd);
-                goto connessione;
+                goto connessione;  //ritornare alla connessione
 
             }
 
+            //pulisco il buffer
 
             while ((c = getchar()) != '\n' && c != EOF);
 
-
+            //se la scelta è due bisogna mandare anche il nome del corso
             if (req == 2) {
                 char exam[255] = {0};
                 printf("\nInserisci nome corso: ");
@@ -100,6 +110,7 @@ int main (int argc, char **argv) {
                 }
             }
 
+            //ricevuta numero appelli disponibili
 
             if (read(sockfd, &num_rows, sizeof(num_rows)) < 0) {
                 printf("\nConnessione con la segreteria persa, ritento la connessione...\n");
@@ -133,6 +144,8 @@ int main (int argc, char **argv) {
             }
         }
 
+        //digita il nome e la data dell'appello specifico per inviare la richiesta di prenotazione
+
         else if (request == 2) {
             char exam_name[255], exam_date[255];
 
@@ -159,6 +172,7 @@ int main (int argc, char **argv) {
 
             char res[255] = {0};
 
+            //lo studente riceve l'esito dell'operazione con il numero progressivo
 
             if (read(sockfd, res, sizeof(res)) < 0) {
                 printf("\nConnessione con la segreteria persa, ritento la connessione...\n");
