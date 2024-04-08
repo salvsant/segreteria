@@ -32,19 +32,20 @@ int main(int argc, char **argv) {
     Client_stud client_sockets[4096];
 
     // SEGRETERIA CLIENT
-
+    // Controllo inserimento ip
     if (argc != 2) {
         fprintf(stderr, "Utilizzo: %s <indirizzoIP>\n", argv[0]);
         exit(1);
     }
 
-
+    //Creazione socket
     if ((sockfd = socket(AF_INET,SOCK_STREAM,0)) < 0) {
         perror("Errore nella creazione della socket!");
         exit(1);
     }
 
-
+/** Specifico la struttura dell'indirizzo del server al quale ci si vuole connettere tramite i campi di una struct
+     * di tipo sockaddr_in.*/
     servaddr.sin_family = AF_INET;
     if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
         fprintf(stderr, "Errore inet_pton per %s\n", argv[1]);
@@ -52,6 +53,7 @@ int main(int argc, char **argv) {
     }
     servaddr.sin_port = htons(1025);
 
+    //connessione
     if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
         perror("Errore nell'operazione di connect!");
         exit(1);
@@ -65,24 +67,28 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-
+    //specifico la struttura dell'indirizzo del server
     secaddr.sin_family = AF_INET;
     secaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     secaddr.sin_port = htons(1026);
 
+/**
+     * La system call bind permette di assegnare l'indirizzo memorizzato nel campo s_addr della struct sin_addr, che è
+     * a sua volta un campo della struct sockaddr_in (secaddr nel nostro caso), al descrittore listenfd.
+     */
 
     if ((bind(listenfd, (struct sockaddr *)&secaddr, sizeof (secaddr))) < 0) {
         perror("Errore nell'operazione di bind!");
         exit(1);
     }
 
-
+    //Server in ascolto
     if ((listen(listenfd, 5)) < 0) {
         perror("Errore nell'operazione di listen!");
         exit(1);
     }
 
-
+    //inizializza database
     conn = mysql_init(NULL);
 
     if (conn == NULL) {
@@ -91,18 +97,23 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-
-    if (mysql_real_connect(conn, "87.11.19.92", "admin", "admin", "nuova_segreteria", 3306, NULL, 0) == NULL) {
+    //connessione al database mysql
+    if (mysql_real_connect(conn, "95.252.224.133", "admin", "admin", "nuova_segreteria", 3306, NULL, 0) == NULL) {
         fprintf(stderr, "mysql_real_connect() fallita: %s\n", mysql_error(conn));
         mysql_close(conn);
         exit(1);
     }
 
+    /**
+        * Ci serviamo di 3 "insiemi" di descrittori per strutturare la successiva select.
+        * In particolare abbiamo read_set e write_set che mantengono l'insieme dei descrittori, rispettivamente in lettura
+        * e scrittura, e master_set, che permette di reinizializzare read_set e write_set ad ogni iterazione.
+        */
 
     fd_set read_set, write_set, master_set;
     int max_fd;
 
-
+    //Inizializzo a 0 tutti i descrittori
     FD_ZERO(&master_set);
 
     FD_SET(sockfd, &master_set);
@@ -111,23 +122,35 @@ int main(int argc, char **argv) {
     FD_SET(listenfd, &master_set);
     max_fd = max(max_fd, listenfd);
 
+    //while esterno per ottimizzare velocità
     while(1) {
         read_set = master_set;
         write_set = master_set;
 
-
+        //while interno per soddisfare le richieste dei client
         while (1) {
+
+            /**
+            * La funzione select restituisce il numero di descrittori pronti, a partire dagli "insiemi" di descrittori
+            * passati.
+            */
 
             if (select(max_fd + 1, &read_set, &write_set, NULL, NULL) < 0) {
                 perror("Errore nell'operazione di select!");
             }
 
+            //controllo listenfd per instaurare nuove connessioni
+
             if (FD_ISSET(listenfd, &read_set)) {
+
+                //system call accept per accettare nuove connessioni
 
                 if ((client_sockets[dim].connfd = accept(listenfd, (struct sockaddr *)NULL, NULL)) < 0) {
                     perror("Errore nell'operazione di accept!");
                 }
                 else {
+
+                    //aggiunta descrittore legata nuova connessione
 
                     FD_SET(client_sockets[dim].connfd, &master_set);
                     max_fd = max(max_fd, client_sockets[dim].connfd);
@@ -142,26 +165,31 @@ int main(int argc, char **argv) {
             }
         }
 
-
+        /**
+                * Itero in base al valore di dim in modo da soddisfare le richieste di tutti gli studenti connessi in modo
+                * concorrente.
+                */
 
         for (int i=0; i < dim; i++) {
+
+            //controllo dei descrittori delle socket di connessione dei client
 
             if (FD_ISSET(client_sockets[i].connfd, &read_set) && client_sockets[i].connfd != -1) {
 
 
-
+                //la segreteria riceve le scelte delle operazioni da fare
                 read(client_sockets[i].connfd, &behaviour, sizeof(behaviour));
 
-
+                //scelta 1- visualizza appelli disponibili
                 if (behaviour == 1) {
 
                     int req;
                     read(client_sockets[i].connfd, &req, sizeof(req));
 
-
+                    //stringa che contiene la query per effettuare l'operazione 1
                     char query[500];
 
-
+                    //req = 1 tutti gli appelli
                     if (req == 1) {
                         snprintf(query, sizeof(query), "SELECT exam_session_name, DATE_FORMAT(session_date, '%%Y-%%m-%%d') FROM exam_sessions");
 
@@ -172,6 +200,7 @@ int main(int argc, char **argv) {
 
                     }
 
+                    //req = 2 appelli di uno specifico corso
                     else if (req == 2) {
                         char exam[255] = {0};
 
@@ -193,6 +222,8 @@ int main(int argc, char **argv) {
                     }
                     else {
 
+                        //invio dei risultati allo studente
+
                         unsigned int num_rows = mysql_num_rows(res2);
                         write(client_sockets[i].connfd, &num_rows, sizeof(num_rows));
 
@@ -211,10 +242,17 @@ int main(int argc, char **argv) {
                     mysql_free_result(res2);
                 }
 
+
+                //scelta due- studente vuole prenotare un appello
+
                 else if (behaviour == 2) {
                     char exam_name[255], exam_date[255];
                     char res[255] = {0};
 
+                    /**
+                    * La prenotazione deve avvenire tramite il server universitario, quindi inoltriamo la richiesta
+                    * dello studente al server universitario.
+                    */
 
                     write(sockfd, &behaviour, sizeof(behaviour));
                     perror("behaviour");
@@ -228,6 +266,7 @@ int main(int argc, char **argv) {
                     perror("read2");
 
 
+                    //inoltro dati ricevuti da studente a server
 
                     write(sockfd, exam_name, sizeof(exam_name));
                     perror("write1");
@@ -237,15 +276,18 @@ int main(int argc, char **argv) {
 
 
 
+                    //ricezione esito operazione dal server
+
                     read(sockfd, res, sizeof(res));
                     perror("readserver");
 
 
+                    //esito inoltrato allo studente
 
                     write(client_sockets[i].connfd, res, sizeof(res));
                     perror("write");
 
-
+                    //invio del numero progressivo allo studente relativo all'esame prenotato
 
                     if (strcmp(res, "Inserimento della nuova prenotazione completato con successo!") == 0) {
                         int count;
@@ -257,6 +299,10 @@ int main(int argc, char **argv) {
         }
 
 
+        /*controllo se la segreteria è pronta in scrittura
+        legge gli eventi in console e se non succede nulla prima del timeout
+         si resetta il loop
+         */
         if (FD_ISSET(sockfd, &write_set)) {
 
             FD_ZERO(&read_set);
@@ -281,7 +327,7 @@ int main(int argc, char **argv) {
                     perror("select");
                     return 1;
                 } else if (ready == 0) {
-                    // Timeout occurred, return to the beginning of the while loop
+                    // Timeout, ritorni all'inizio del while
                     continue;
                 }
 
@@ -295,11 +341,19 @@ int main(int argc, char **argv) {
 
                 printf("\n");
 
+                //pulizia buffer input
+
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF);
 
 
                 test =  2;}
+
+            /**
+             * Nel caso in cui si voglia aggiungere un nuovo appello, si procede alla comunicazione con il server
+             * universitario.
+             */
+
             if (logical == 2) {
 
                 if(test == 2){
@@ -326,6 +380,7 @@ int main(int argc, char **argv) {
 
                     printf("\n");
 
+                    //invio nome esame di cui si vuole aggiungere un appello
 
                     write(sockfd, name, strlen(name));
 
@@ -347,14 +402,20 @@ int main(int argc, char **argv) {
                     fgets(date, sizeof(date), stdin);
                     date[strlen(date) - 1] = 0;
 
+                    //invio data di appello
+
                     write(sockfd, date, strlen(date));
 
+                    //ricezione esito operazione
 
                     read(sockfd, result, sizeof(result));
 
                     printf("\nEsito: %s\n\n", result);
                     test = 0;}
             }
+
+            //la segreteria vuole aggiungere un esame
+
             if (logical == 3) {
                 if(test == 2){
                     int request = 3;
