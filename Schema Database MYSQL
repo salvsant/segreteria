@@ -1,0 +1,25 @@
+create table exams
+(
+    exam_name  varchar(255) not null
+        primary key,
+    nome_corso varchar(255) null
+);
+
+create table exam_sessions
+(
+    exam_session_name varchar(255) not null,
+    session_date      date         not null,
+    primary key (session_date, exam_session_name),
+    constraint exam_sessions_exams_exam_name_fk
+        foreign key (exam_session_name) references exams (exam_name)
+);
+
+create table booking
+(
+    exam_name          varchar(255) not null,
+    date               date         not null,
+    progressive_number int          not null,
+    primary key (date, exam_name, progressive_number),
+    constraint booking_exam_sessions_exam_session_name_session_date_fk
+        foreign key (exam_name, date) references exam_sessions (exam_session_name, session_date)
+);
